@@ -1,0 +1,342 @@
+<html>
+    <header>
+        <title>Apontamentos Fracionados</title>
+    </header>
+
+    <style>
+        body {
+            text-align: center; 
+            background-color: whitesmoke; 
+            color: rgb(41, 41, 102);
+        }
+
+        .box {
+            text-align: center; 
+            align-items: center; 
+            justify-content: center; 
+            display: flex;
+        }
+
+        .box-horarios {
+            border-radius: 10px; 
+            background-color: rgb(41, 41, 102); 
+            color: whitesmoke; 
+            display: flex; 
+            width: 80%; 
+            align-items: center; 
+            justify-content: center;
+        }
+
+        .inicio {
+            display: flex; 
+            text-align: center; 
+            width: 35%; 
+            height: 100px;
+        }
+
+        .final {
+            border-left: 1px solid whitesmoke; 
+            margin-left: 40px; 
+            display: flex; 
+            text-align: center; 
+            width: 35%; 
+            height: 100px;
+        }
+
+        .box-hora-minuto {
+            margin: 0; 
+            padding: 0; 
+            align-self: center;
+        }
+
+        .box-hora-minuto p {
+            display: flexbox;
+            padding: 0; 
+            margin: 0;
+        }
+
+        .box-hora-minuto #horaI, #horaF {
+            color: rgb(41, 41, 102); 
+            border-radius: 10px;
+            width: 90%;
+            height: 30px;
+            border: none;
+            padding: 0px;
+            margin: 0px;
+            text-align: center;
+        }
+
+        .box-hora-minuto #minI, #minF {
+            color: rgb(41, 41, 102); 
+            border-radius: 10px;
+            width: 90%;
+            height: 30px;
+            border: none;
+            padding: 0px;
+            margin: 0px;
+            text-align: center;
+        }
+
+        h3 {
+            padding: 20px;
+        }
+
+        .final h3 {
+            padding: 20px; 
+            padding-left: 40px;
+        }
+
+        .select-tmos {
+            display: flex; 
+            width: 80%; 
+            height: 60px; 
+            padding: 10px; 
+            align-items: center; 
+            justify-content: center;
+        }
+
+        #tmos {
+            color: rgb(41, 41, 102); 
+            text-align: center; 
+            border-radius: 10px; 
+            width: 70%; 
+            height: 30px; 
+            border: none; 
+            padding: 0px; margin: 5px;
+        }
+        
+        #tmosTempo {
+            color: rgb(41, 41, 102); 
+            text-align: center; 
+            border-radius: 10px; 
+            width: 20%; 
+            height: 30px; 
+            border: none; 
+            padding: 0px; 
+            margin: 5px;
+        }
+
+        .select-tmos button {
+            border-radius: 10px;
+            width: 5%; 
+            height: 30px; 
+            border: none; 
+            padding: 0px; 
+            margin: 5px; 
+            background-color: green; 
+            color: whitesmoke;
+        }
+
+        #mostraApontamentos {
+            align-content: center; 
+            text-align: center;
+        }
+
+        #mostraApontamentos button {
+            margin-bottom: 20px;  
+            background-color: #c50c0c; 
+            border-radius: 5px; 
+            border: none;
+            color: white; 
+            width: 60%; 
+            height: 40px;
+        }
+
+        #mostraInicio {
+            text-align: center;
+            align-content: center;
+            justify-items: center;
+        }
+
+        #mostraI {
+            color: rgb(41, 41, 102); 
+            width: 60%;
+            height: 30px;
+            border: 1PX solid rgb(41, 41, 102);
+            border-radius: 5px;
+            align-items: center;
+            justify-content: center;
+            display: grid;
+        }
+
+        #apontamento {
+            justify-items: center;
+        }
+
+    </style>
+
+    <script>
+
+        let minTotaisGastos
+        let minTotalCobrado = 0
+        let tmosUsadas = Array()
+        let hora, min, i=0
+        let minInicio, horaInicio, minFinal, horaFinal
+
+        function calculaMinTotalGasto(horaFinal, minFinal, horaInicio, minInicio) {
+            let resultado
+
+            // Calcula minutos totais gastos
+            if (minFinal - minInicio == 60){ // caso 01
+                resultado = (horaFinal - horaInicio) * 60 
+            } else { // caso 02
+                resultado = (horaFinal - horaInicio ) * 60 
+                if (minFinal == 0){ // caso 03
+                    resultado = (horaFinal - horaInicio -1 ) * 60
+                    minFinal = 60
+                }
+                resultado += minFinal - minInicio 
+            }
+
+            return resultado
+        }        
+
+        function guardaTMO(){
+
+            // Recupera os horas e minutos finais
+            horaFinal = parseInt(document.getElementById("horaF").value)
+            minFinal = parseInt(document.getElementById("minF").value)
+            horaInicio = parseInt(document.getElementById("horaI").value)
+            minInicio = parseInt(document.getElementById("minI").value)
+
+            // Armazena tempo gasto
+            minTotaisGastos = calculaMinTotalGasto(horaFinal, minFinal, horaInicio, minInicio)
+
+            // Recupera TMO e tempo cobrado
+            let nomeTMO = document.getElementById("tmos").value
+            let tempoTMO = parseFloat(document.getElementById("tmosTempo").value)
+
+            // Armazena TMO inserida e incrementa i (para o próximo indice)
+            tmosUsadas[i] = [nomeTMO, tempoTMO]
+            i++
+
+            // Apresenta horário inicial
+            minInicio == 0 ? document.getElementById("mostraI").innerHTML = horaInicio + ":" + minInicio + "0" : document.getElementById("mostraI").innerHTML = horaInicio + ":" + minInicio
+
+            // Apaga todos os elementos filhos do local de apontamentos (atualiza a cada inserção - garante a não duplicidade)
+            while(document.getElementById("apontamento").firstChild){
+                document.getElementById("apontamento").removeChild(document.getElementById("apontamento").firstChild)
+            }
+
+            calculaRateio()
+        }
+
+        function calculaRateio (){
+            
+            minTotalCobrado = 0
+            
+            // incrementa a minutos cobrados a cada TMO inserida
+            tmosUsadas.forEach(mo => {minTotalCobrado+= mo[1]})
+
+            tmosUsadas.forEach( (mo) => {
+
+                //Calcula o tempo gasto por TMO
+                let tempoPorTMO = (mo[1] / minTotalCobrado ) * minTotaisGastos
+
+                // Atualiza hora e minutos
+                if (minInicio + tempoPorTMO >= 60){ // Quando altera a hora 
+                    horaInicio = horaInicio + parseInt((minInicio + tempoPorTMO) / 60)
+                    minInicio = parseInt((minInicio + tempoPorTMO) % 60)
+                } else { // Quando não altera a hora
+                    minInicio = parseInt(minInicio + tempoPorTMO)
+                }
+
+                // Cria elemento html e insere as informações de apontamento 
+                let pNomeTMO = document.createElement("p")
+                document.getElementById("apontamento").appendChild(pNomeTMO)
+                pNomeTMO.id = "nomeTMO"
+                pNomeTMO.style = style="width: 60%;height: 30px;background-color: rgb(41, 41, 102); color: whitesmoke; border-radius: 5px;align-items: center;justify-content: center;display: grid;"
+                if (minInicio == 0){
+                    pNomeTMO.innerText = "[ " + horaInicio +":" + minInicio + "0  ]  - " + mo[0]
+                } else if (minInicio < 10){
+                    pNomeTMO.innerText = "[ " + horaInicio +":0" + minInicio + "  ]  - " + mo[0]
+                } else {
+                    pNomeTMO.innerText = "[ " + horaInicio +":" + minInicio + "  ]  - " + mo[0]
+                }
+            
+            })
+        }
+
+        function limpar(){
+
+            // Apaga todos os elementos filhos de #apontamento
+            while(document.getElementById("apontamento").firstChild){
+                document.getElementById("apontamento").removeChild(document.getElementById("apontamento").firstChild)
+            }
+
+            // limpa os valores inseridos
+            tmosUsadas = []
+            document.getElementById("horaF").value = ""
+            document.getElementById("horaI").value = ""
+            document.getElementById("minF").value = ""
+            document.getElementById("minI").value = ""
+            document.getElementById("tmos").value = ""
+            document.getElementById("tmosTempo").value = ""
+            document.getElementById("mostraI").innerHTML = "Horário início"
+        }
+
+    </script>
+
+    <body>
+        <h1>Rateio TMO</h1>
+
+        <div class="box">
+            <div class="box-horarios" >
+                <div class="inicio">
+                    <h3>Início</h3>
+                    <div class="box-hora-minuto">
+                        <p>Hora</p>
+                        <input type="text" id="horaI">
+                    </div>
+                    <div class="box-hora-minuto">
+                        <p>Minutos</p>
+                        <input type="text" id="minI">
+                    </div>
+                </div>
+        
+                <div class="final">
+                    <h3>Final</h3>
+                    <div class="box-hora-minuto">
+                        <p>Hora</p>
+                        <input type="text" id="horaF">
+                    </div>
+                    <div class="box-hora-minuto">
+                        <p>Minutos</p>
+                        <input type="text" id="minF">
+                    </div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="select-tmos">
+                <select name="tmos"  id="tmos">
+                    <option value="Inspeção"> Inspeção</option>
+                    <option value="Filtro de ar do motor"> Filtro Ar Motor</option>
+                    <option value="Alinhamento"> Alinhamento</option>
+                    <option value="Balanceamento"> Balanceamento</option>
+                    <option value="Bateria Examinar"> Bateria Examinar</option>
+                    <option value="Portas Abertas"> Portas Abertas</option>
+                    <option value="Pit Stpo Plus"> Pit Stop Plus</option>
+                    <option value="Mão de Obra Servico Mecanica"> Mão de Obra Servico Mecanica</option>
+                    <option value="Approved Plus Pós Inspeção"> Approved Plus Pós Inspeção</option>
+                    <option value="Material de Limpeza"> Material Limpeza</option>                
+                </select>
+                <input type="text" id="tmosTempo" placeholder="Tempo cobrado">
+                <button type="text" onclick="guardaTMO()">+</button>
+            </div>
+        </div>
+
+        <div id="mostraApontamentos">
+            <button onclick="limpar()"><b>Limpar</b></button>
+
+            <div id="mostraInicio">
+                <p id="mostraI"> Horário início: </p>
+            </div>
+            <div id="apontamento"></div>
+            
+        </div>
+
+
+    </body>
+</html>
